@@ -7,6 +7,8 @@
 
 bool haspickaxe = false;
 
+//Crazy Regen
+
 using namespace std;
 Regen::Regen() : IModule(0, Category::COMBAT, "Regenerates your health") {
 	mode.addEntry(EnumEntry("Normal", 0))
