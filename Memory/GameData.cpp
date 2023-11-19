@@ -115,7 +115,7 @@ void GameData::displayMessages(GuiData* guiData) {
 			break;
 		}
 
-		guiData->displayClientMessageNoSendF("%s%s%s%s", GOLD, it->time, RESET, it->text);
+		guiData->displayClientMessageNoSendF("%sAmbosial > %s%s", GRAY, RESET, it->text);
 	}
 	stringPrintVector->erase(stringPrintVector->begin(), it);
 #else

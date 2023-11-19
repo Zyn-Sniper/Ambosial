@@ -8,6 +8,11 @@ public:
 	~ClickGuiMod();
 
 	bool showTooltips = true;
+	bool animations = true;
+	float animation = 1.f;
+	bool lowercase = true;
+	bool darken = true;
+	bool cFont = false;
 
 	float openAnim = 1.f;
 	int openTime = 0;

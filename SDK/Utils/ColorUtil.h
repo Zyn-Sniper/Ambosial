@@ -15,20 +15,12 @@ private:
 	}
 
 public:
-	inline static MC_Color ColorUtil::Test(int red, int green, int blue, int red2, int green2, int blue2, long index) {
-		float hue = ((TimerUtil::getCurrentMs()) % (int)(((int)10) * 1000)) / (float)(((int)10) * 1000);
-		float r, g, b = 0;
-		Utils::ColorConvertHSVtoRGB(hue, 1.F, 1, r, g, b);
-		double offset = ((TimerUtil::getCurrentMs() - index) / 2) / (double)120;
-		double aids123 = ((TimerUtil::getCurrentMs() - index) % 1000 / 1000.000);
-		int aids1234 = ((TimerUtil::getCurrentMs() - index) % 2000 / 2000.000) * 2;
-		aids123 = aids1234 % 2 == 0 ? aids123 : 1 - aids123;
-		double inverse_percent = 1 - aids123;
-		int redPart = (int)(r * red * inverse_percent + r * red2 * aids123);
-		int greenPart = (int)(g * green * inverse_percent + g * green2 * aids123);
-		int bluePart = (int)(b * blue * inverse_percent + b * blue2 * aids123);
+	inline static MC_Color ColorUtil::Test(long index) {
+		float currentHue = (((TimerUtil::getCurrentMs() + index) % (int)(2.5 * 1000)) / (float)(2.5 * 1000));
+		float red, green, blue = 0.0f;
+		Utils::ColorConvertHSVtoRGB(currentHue, 1, 1, red, green, blue);
 
-		return MC_Color(redPart, greenPart, bluePart);
+		return MC_Color(red - 0.25, green - 0.25, blue - 0.25, 1.f);
 	}
 
 	inline static MC_Color ColorUtil::waveColor(int red, int green, int blue, int red2, int green2, int blue2, long index) {

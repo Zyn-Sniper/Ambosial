@@ -1,13 +1,13 @@
 #include "ClickGui.h"
 
-#include "../Module/Modules/ClickGuiMod.h"
-
-#include "../../SDK/Utils/Render/RenderUtil.h"
-#include "../../SDK/Utils/Animation/AnimationUtil.h"
-#include "../../SDK/Utils/Logger.h"
 #include <Windows.h>
-#include "../../SDK/Utils/Json.hpp"
+
+#include "../../SDK/Utils/Animation/AnimationUtil.h"
 #include "../../SDK/Utils/ClientColors.h"
+#include "../../SDK/Utils/Json.hpp"
+#include "../../SDK/Utils/Logger.h"
+#include "../../SDK/Utils/Render/RenderUtil.h"
+#include "../Module/Modules/ClickGuiMod.h"
 
 bool resetStartPos = true;
 bool initialised = false;
@@ -33,15 +33,16 @@ bool isFocused = false;
 static constexpr float textPaddingX = 2.0f;
 static constexpr float textPaddingY = 1.0f;
 static constexpr float categoryMargin = 0.5f;
+static constexpr float textPadding = 1.0f;
 static constexpr float paddingRight = 13.5f;
 static constexpr float crossWidth = 0.25f;
 static constexpr float backgroundAlpha = 1;
 
-static const MC_Color whiteColor = MC_Color(255,255,255);
-static const MC_Color moduleColor = MC_Color(18, 18, 18); // background
+static const MC_Color whiteColor = MC_Color(255, 255, 255);
+static const MC_Color moduleColor = MC_Color(18, 18, 18);                         // background
 static const MC_Color selectedModuleColor = moduleColor.lerp(whiteColor, 0.08f);  // 30, 110, 200
-static const MC_Color enabledModuleColor = moduleColor.lerp(whiteColor, 0.04f);  
-static const MC_Color brightModuleBlendColor = moduleColor.lerp(whiteColor, 0.2f); // tooltip border & category divider
+static const MC_Color enabledModuleColor = moduleColor.lerp(whiteColor, 0.04f);
+static const MC_Color brightModuleBlendColor = moduleColor.lerp(whiteColor, 0.2f);  // tooltip border & category divider
 static const MC_Color selectedSettingColor1 = MC_Color(85, 85, 85);
 static const MC_Color selectedSettingColor2 = MC_Color(85, 85, 85);
 static const MC_Color SettingColor1 = MC_Color(12, 12, 12);
@@ -74,9 +75,9 @@ std::shared_ptr<ClickWindow> ClickGui::getWindow(const char* name) {
 		newWindow->name = name;
 
 		auto savedSearch = savedWindowSettings.find(id);
-		if(savedSearch != savedWindowSettings.end()){ // Use values from config
+		if (savedSearch != savedWindowSettings.end()) {  // Use values from config
 			newWindow->isExtended = savedSearch->second.isExtended;
-			if(savedSearch->second.pos.x > 0)
+			if (savedSearch->second.pos.x > 0)
 				newWindow->pos = savedSearch->second.pos;
 		}
 
@@ -177,7 +178,7 @@ void ClickGui::renderCategory(Category category) {
 	// Get max width of all text
 	{
 		for (auto& it : moduleList) {
-			std::string label = it->getModuleName();
+			std::string label = it->getRawModuleName();
 			windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&label, textSize, Fonts::SMOOTH));
 		}
 	}
@@ -201,10 +202,10 @@ void ClickGui::renderCategory(Category category) {
 		if (ourWindow->isExtended) {
 			ourWindow->animation *= 0.895f;
 			if (ourWindow->animation < 0.01f) {
-				ourWindow->yOffset = 0; // reset scroll
+				ourWindow->yOffset = 0;  // reset scroll
 				ourWindow->isInAnimation = false;
 			}
-				
+
 		} else {
 			ourWindow->animation = 1 - ((1 - ourWindow->animation) * 0.85f);
 			if (1 - ourWindow->animation < 0.001f)
@@ -227,18 +228,18 @@ void ClickGui::renderCategory(Category category) {
 			if (moduleIndex < ourWindow->yOffset)
 				continue;
 			float probableYOffset = (moduleIndex - ourWindow->yOffset) * (textHeight + (textPaddingY * 2));
-			
-			if (ourWindow->isInAnimation) { // Estimate, we don't know about module settings yet
+
+			if (ourWindow->isInAnimation) {  // Estimate, we don't know about module settings yet
 				if (probableYOffset > cutoffHeight) {
 					overflowing = true;
 					break;
 				}
-			}else if ((currentYOffset - ourWindow->pos.y) > cutoffHeight || currentYOffset > Game.getGuiData()->heightGame - 5) {
+			} else if ((currentYOffset - ourWindow->pos.y) > cutoffHeight || currentYOffset > Game.getGuiData()->heightGame - 5) {
 				overflowing = true;
 				break;
 			}
 
-			std::string textStr = mod->getModuleName();
+			std::string textStr = mod->getRawModuleName();
 
 			Vec2 textPos = Vec2(
 				currentXOffset + textPaddingX,
@@ -264,14 +265,13 @@ void ClickGui::renderCategory(Category category) {
 						DrawUtils::shouldToggleLeftClick = false;
 					}
 				} else {
-					DrawUtils::fillRectangle(rectPos, mod->isEnabled() ? ColorUtil::Test(190, 190, 190, 190, 190, 190, moduleList.size() * moduleIndex * 2) : MC_Color(20, 20, 20), backgroundAlpha);
-				
+					DrawUtils::fillRectangle(rectPos, mod->isEnabled() ? ColorUtil::Test(moduleList.size() * moduleIndex * 2) : MC_Color(20, 20, 20), backgroundAlpha);
 				}
 			}
 
 			// Text
 			if (allowRender)
-				RenderUtil::drawText(textPos, &textStr, whiteColor, textSize, 1, true, MOJANG);
+				RenderUtil::drawText(textPos, &textStr, whiteColor, textSize, 1, true, NOTOSANS);
 
 			// Settings
 			{
@@ -293,7 +293,7 @@ void ClickGui::renderCategory(Category category) {
 					if (clickMod->isExtended) {
 						float startYOffset = currentYOffset;
 						for (auto setting : *settings) {
-								if (strcmp(setting->name, "enabled") == 0 || strcmp(setting->name, "keybind") == 0)
+							if (strcmp(setting->name, "enabled") == 0 || strcmp(setting->name, "keybind") == 0)
 								continue;
 
 							Vec2 textPos = Vec2(
@@ -363,7 +363,7 @@ void ClickGui::renderCategory(Category category) {
 
 									std::string elTexto = name;
 									windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&elTexto, textSize) + 10 /* because we add 10 to text padding + checkbox*/);
-									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, MOJANG);
+									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, NOTOSANS);
 									currentYOffset += textHeight + (textPaddingY * 2);
 								}
 								break;
@@ -381,22 +381,22 @@ void ClickGui::renderCategory(Category category) {
 									rectPos.w = currentYOffset + textHeight + (textPaddingY * 2);
 									windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&elTexto, textSize) + 5 /* because we add 5 to text padding*/ + crossSize);
 									// Background of enum setting
-									
+
 									if (rectPos.contains(&mousePos)) {
 										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);
 										if (DrawUtils::shouldToggleRightClick && !ourWindow->isInAnimation) {
 											DrawUtils::shouldToggleRightClick = false;
 											setting->minValue->_bool = !setting->minValue->_bool;
 										}
-									}else 
+									} else
 										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);
-									
-									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, MOJANG);
+
+									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, NOTOSANS);
 									GuiUtils::drawCrossLine(Vec2(
 																currentXOffset + windowSize->x + paddingRight - (crossSize / 2) - 1.f,
 																currentYOffset + textPaddingY + (textHeight / 2)),
 															whiteColor, crossWidth, crossSize, !setting->minValue->_bool);
-									
+
 									currentYOffset += textHeight + (textPaddingY * 2);
 								}
 								if (setting->minValue->_bool) {
@@ -420,7 +420,7 @@ void ClickGui::renderCategory(Category category) {
 										std::string elTexto = name;
 										windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(
 																				&elTexto, textSize) +
-																				5);  //because we add 5 to text padding
+																				5);  // because we add 5 to text padding
 										textPos.y = currentYOffset + textPaddingY;
 										Vec4 selectableSurface = Vec4(
 											textPos.x,
@@ -428,14 +428,14 @@ void ClickGui::renderCategory(Category category) {
 											xEnd,
 											rectPos.w);
 										MC_Color col;
-										if (setting->value->_int == e || (selectableSurface.contains(&mousePos) && !ourWindow->isInAnimation)) 
+										if (setting->value->_int == e || (selectableSurface.contains(&mousePos) && !ourWindow->isInAnimation))
 											col = ClientColors::clickGuiHoveredModuleColor;
 										else
 											col = MC_Color(25, 25, 25);
 										// Background of individual enum
 										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);
 										DrawUtils::fillRectangle(selectableSurface, col, backgroundAlpha);
-										RenderUtil::drawText(textPos, &elTexto, whiteColor, 1, 1, true, MOJANG);
+										RenderUtil::drawText(textPos, &elTexto, whiteColor, 1, 1, true, NOTOSANS);
 										// logic
 										if (selectableSurface.contains(&mousePos) &&
 											DrawUtils::shouldToggleLeftClick && !ourWindow->isInAnimation) {
@@ -458,10 +458,10 @@ void ClickGui::renderCategory(Category category) {
 
 									std::string elTexto = name;
 									windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&elTexto, textSize) + 5 /* because we add 5 to text padding*/);
-									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, MOJANG);
+									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, NOTOSANS);
 									currentYOffset += textPaddingY + textHeight;
 									rectPos.w = currentYOffset;
-									DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha); // bacground
+									DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);  // bacground
 								}
 
 								if ((currentYOffset - ourWindow->pos.y) > cutoffHeight) {
@@ -482,13 +482,13 @@ void ClickGui::renderCategory(Category category) {
 										rectPos.w += textHeight + (textPaddingY * 2);
 										// Background
 										const bool areWeFocused = rect.contains(&mousePos);
-										
-										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);  // slder Background
+
+										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);    // slder Background
 										DrawUtils::drawRectangle(rect, MC_Color(18, 18, 18), 1.f, backgroundAlpha);  // Slider outlne background
 
 										const float minValue = setting->minValue->_float;
 										const float maxValue = setting->maxValue->_float - minValue;
-										float value = (float) fmax(0, setting->value->_float - minValue);  // Value is now always > 0 && < maxValue
+										float value = (float)fmax(0, setting->value->_float - minValue);  // Value is now always > 0 && < maxValue
 										if (value > maxValue)
 											value = maxValue;
 										value /= maxValue;  // Value is now in range 0 - 1
@@ -499,20 +499,19 @@ void ClickGui::renderCategory(Category category) {
 										{
 											Vec2 mid = Vec2(
 												rect.x + ((rect.z - rect.x) / 2),
-												rect.y - 0.2f
-											);
+												rect.y - 0.2f);
 											char str[10];
-											sprintf_s(str, 10, "%.1f", setting->value->_float); //ZEPHYRLOL
+											sprintf_s(str, 10, "%.1f", setting->value->_float);  // ZEPHYRLOL
 											std::string text = str;
 											mid.x -= DrawUtils::getTextWidth(&text, textSize) / 2;
 
-											RenderUtil::drawText(mid, &text, whiteColor, textSize, 1, true, MOJANG);
+											RenderUtil::drawText(mid, &text, whiteColor, textSize, 1, true, NOTOSANS);
 										}
 
 										// Draw Progress
 										{
 											rect.z = rect.x + value;
-											DrawUtils::fillRectangle(rect, MC_Color(55, 55, 55), (areWeFocused || setting->isDragging) ? 1.f : 0.8f); //Slider
+											DrawUtils::fillRectangle(rect, MC_Color(55, 55, 55), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);  // Slider
 										}
 
 										// Drag Logic
@@ -542,8 +541,6 @@ void ClickGui::renderCategory(Category category) {
 								}
 							} break;
 							case ValueType::INT_T: {
-
-								
 								// Text and background
 								{
 									// Convert first letter to uppercase for more friendlieness
@@ -554,10 +551,10 @@ void ClickGui::renderCategory(Category category) {
 
 									std::string elTexto = name;
 									windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&elTexto, textSize) + 5 /* because we add 5 to text padding*/);
-									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, MOJANG);
+									RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, NOTOSANS);
 									currentYOffset += textPaddingY + textHeight;
 									rectPos.w = currentYOffset;
-									DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha); // Bacground
+									DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);  // Bacground
 								}
 								if ((currentYOffset - ourWindow->pos.y) > (Game.getGuiData()->heightGame * 0.75)) {
 									overflowing = true;
@@ -577,7 +574,7 @@ void ClickGui::renderCategory(Category category) {
 										rectPos.w += textHeight + (textPaddingY * 2);
 										// Background
 										const bool areWeFocused = rect.contains(&mousePos);
-										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha); // Background
+										DrawUtils::fillRectangle(rectPos, MC_Color(25, 25, 25), backgroundAlpha);    // Background
 										DrawUtils::drawRectangle(rect, MC_Color(18, 18, 18), 1.f, backgroundAlpha);  // Slider outline background
 
 										const float minValue = (float)setting->minValue->_int;
@@ -600,13 +597,13 @@ void ClickGui::renderCategory(Category category) {
 											std::string text = str;
 											mid.x -= DrawUtils::getTextWidth(&text, textSize) / 2;
 
-											RenderUtil::drawText(mid, &text, whiteColor, textSize, 1, true, MOJANG);
+											RenderUtil::drawText(mid, &text, whiteColor, textSize, 1, true, NOTOSANS);
 										}
 
 										// Draw Progress
 										{
 											rect.z = rect.x + value;
-											DrawUtils::fillRectangle(rect, MC_Color(55, 55, 55), (areWeFocused || setting->isDragging) ? 1.f : 0.8f); // The Slider
+											DrawUtils::fillRectangle(rect, MC_Color(55, 55, 55), (areWeFocused || setting->isDragging) ? 1.f : 0.8f);  // The Slider
 										}
 
 										// Drag Logic
@@ -642,7 +639,7 @@ void ClickGui::renderCategory(Category category) {
 								// Adjust window size if our text is too  t h i c c
 								windowSize->x = fmax(windowSize->x, DrawUtils::getTextWidth(&elTexto, textSize) + 5 /* because we add 5 to text padding*/);
 
-								RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, MOJANG);
+								RenderUtil::drawText(textPos, &elTexto, whiteColor, textSize, 1, true, NOTOSANS);
 								currentYOffset += textHeight + (textPaddingY * 2);
 							} break;
 							}
@@ -711,7 +708,7 @@ void ClickGui::renderCategory(Category category) {
 		// Dragging Logic
 		{
 			if (isDragging && Utils::getCrcHash(categoryName) == draggedWindow) {  // WE are being dragged
-				if (DrawUtils::isLeftClickDown) {                                      // Still dragging
+				if (DrawUtils::isLeftClickDown) {                                  // Still dragging
 					Vec2 diff = Vec2(mousePos).sub(dragStart);
 					ourWindow->pos = ourWindow->pos.add(diff);
 					dragStart = mousePos;
@@ -730,10 +727,10 @@ void ClickGui::renderCategory(Category category) {
 		{
 			// Draw Text
 			std::string textStr = categoryName;
-			RenderUtil::drawText(textPos, &textStr, whiteColor, textSize, 1, true, MOJANG);
-			DrawUtils::fillRectangle(rectPos, MC_Color(15, 15, 15), 1.f);                                                                                       // the color of the category tab
-			DrawUtils::fillRectangle(Vec4(rectPos.x, rectPos.w - 1, rectPos.z, rectPos.w), ColorUtil::Test(190, 190, 190, 190, 190, 190, 1.F), 1 - ourWindow->animation);  // rgbl
-			
+			RenderUtil::drawText(textPos, &textStr, whiteColor, textSize, 1, true, NOTOSANS);
+			DrawUtils::fillRectangle(rectPos, MC_Color(15, 15, 15), 1.f);                                                                    // the color of the category tab
+			DrawUtils::fillRectangle(Vec4(rectPos.x, rectPos.w - 1, rectPos.z, rectPos.w), ColorUtil::Test(1.F), 1 - ourWindow->animation);  // rgbl
+
 			// Draw Dash
 			GuiUtils::drawCrossLine(Vec2(currentXOffset + windowSize->x + paddingRight - (crossSize / 2) - 1.f, categoryHeaderYOffset + textPaddingY + (textHeight / 2)), whiteColor, crossWidth, crossSize, !ourWindow->isExtended);
 		}
@@ -767,7 +764,7 @@ void ClickGui::render() {
 		timesRendered++;
 
 	// Fill Background
-	//DrawUtils::fillRectangle(Vec4(0, 0, Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), MC_Color(12, 12, 12), 0.2f);
+	// DrawUtils::fillRectangle(Vec4(0, 0, Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), MC_Color(12, 12, 12), 0.2f);
 	DrawUtils::drawImage("textures/ui/shadow.png", Vec2(0, 0), Vec2(Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), Vec2(0, 0), Vec2(1, 1), ColorUtil::ClientColor(1), 0.5);
 	// Render all categorys
 	renderCategory(Category::COMBAT);
@@ -788,9 +785,9 @@ void ClickGui::render() {
 void ClickGui::init() { initialised = true; }
 
 void ClickGui::onWheelScroll(bool direction) {
-	if (!direction) 
+	if (!direction)
 		scrollingDirection++;
-	 else 
+	else
 		scrollingDirection--;
 }
 
@@ -798,7 +795,7 @@ void ClickGui::onKeyUpdate(int key, bool isDown) {
 	if (!initialised)
 		return;
 	static auto clickGuiMod = moduleMgr->getModule<ClickGuiMod>();
-	
+
 	if (!isDown)
 		return;
 
@@ -819,7 +816,6 @@ void ClickGui::onKeyUpdate(int key, bool isDown) {
 		if (key == clickGuiMod->getKeybind())
 			clickGuiMod->setEnabled(false);
 	}
-	
 }
 using json = nlohmann::json;
 void ClickGui::onLoadConfig(void* confVoid) {
@@ -830,39 +826,6 @@ void ClickGui::onLoadConfig(void* confVoid) {
 		auto obj = conf->at("ClickGuiMenu");
 		if (obj.is_null())
 			return;
-		for (int i = 0; i <= (int)Category::CLIENT /*last category*/; i++) {
-			auto catName = ClickGui::catToName((Category)i);
-			if (obj.contains(catName)) {
-				auto value = obj.at(catName);
-				if (value.is_null())
-					continue;
-				try {
-					SavedWindowSettings windowSettings = {};
-					windowSettings.name = catName;
-					if (value.contains("pos")) {
-						auto posVal = value.at("pos");
-						if (!posVal.is_null() && posVal.contains("x") && posVal["x"].is_number_float() && posVal.contains("y") && posVal["y"].is_number_float()) {
-							try {
-								windowSettings.pos = {posVal["x"].get<float>(), posVal["y"].get<float>()};
-							} catch (std::exception e) {
-							}
-						}
-					}
-					if (value.contains("isExtended")) {
-						auto isExtVal = value.at("isExtended");
-						if (!isExtVal.is_null() && isExtVal.is_boolean()) {
-							try {
-								windowSettings.isExtended = isExtVal.get<bool>();
-							} catch (std::exception e) {
-							}
-						}
-					}
-					savedWindowSettings[Utils::getCrcHash(catName)] = windowSettings;
-				} catch (std::exception e) {
-					logF("Config Load Error (ClickGuiMenu): %s", e.what());
-				}
-			}
-		}
 	}
 }
 void ClickGui::onSaveConfig(void* confVoid) {

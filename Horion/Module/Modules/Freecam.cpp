@@ -12,7 +12,7 @@ const char* Freecam::getModuleName() {
 	return ("Freecam");
 }
 
-void* cameraAddr = (void*)FindSignature("F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43 ? F3 0F 10 44 24 ? F3 0F 11 43");
+void* cameraAddr = (void*)FindSignature("FreeCam\\AddressShit::Function::Camera::GetEaguer\\48 89 5c 24 ? 55 56 57 48 83 ec ? 8b 41 ? 48 8b ea 48 8b 49\\\\Minecraft.Windows.exe+398F464\\Addr::f3 0f 10 15 ? ? ? ? 48 8d 0d ? ? ? ? 48 89 4c 24 ? 48 8d 54 24");
 
 void Freecam::onEnable() {
 	auto Player = Game.getLocalPlayer();
