@@ -104,7 +104,13 @@ public:
 
 	inline static void Glow(const Vec4& Position) {
 		Vec4 gloPos = Vec4(Position.x + 4, Position.y + 2, Position.z - 4, Position.w - 2);
-		DrawUtils::drawGlow(gloPos, MC_Color(0, 0, 0, 50 / 12), 0.05, 12, 4);
+		DrawUtils::drawGlow(gloPos, MC_Color(0, 0, 0, 50 / 6), 0.05, 6, 4);
+		// DrawUtils::drawQuad({layerbozo.x, layerbozo.w}, {layerbozo.z, layerbozo.w}, {layerbozo.z, layerbozo.y}, {layerbozo.x, layerbozo.y});  // yesyes
+	}
+
+	inline static void GlowColored(const Vec4& Position, MC_Color color) {
+		Vec4 gloPos = Vec4(Position.x + 4, Position.y + 2, Position.z - 4, Position.w - 2);
+		DrawUtils::drawGlow(gloPos, MC_Color(color.r, color.g, color.b, 50.f / 6.f), 0.05, 6, 4);
 		// DrawUtils::drawQuad({layerbozo.x, layerbozo.w}, {layerbozo.z, layerbozo.w}, {layerbozo.z, layerbozo.y}, {layerbozo.x, layerbozo.y});  // yesyes
 	}
 

@@ -163,6 +163,9 @@ void Hooks::Init() {
 		void* yRott = reinterpret_cast<void*>(FindSignature("48 89 5c 24 ? 55 56 57 48 83 ec ? 8b 41 ? 48 8b ea 48 8b 49")); //SMOOTH
 		g_Hooks.yRotO = std::make_unique<FuncHook>(destroySpeed, Hooks::yRot);
 
+		void* chatLogHook = reinterpret_cast<void*>(FindSignature("40 55 57 41 56 48 83 EC ? 48 8B 81"));
+		g_Hooks.ChatLogHook = std::make_unique<FuncHook>(chatLogHook, Hooks::chatLogHookFunc);
+
 		static constexpr auto counterStart = __COUNTER__ + 1;
 		#define lambda_counter (__COUNTER__ - counterStart)
 
@@ -1109,6 +1112,38 @@ void Hooks::ClickFunc(__int64 a1, char mouseButton, char isDown, __int16 mouseX,
 	return oFunc(a1, mouseButton, isDown, mouseX, mouseY, relativeMovementX, relativeMovementY, a8);
 }
 
+void Hooks::chatLogHookFunc(__int64 a1, TextHolder* msg, uint32_t a2) {
+	static auto oFunc = g_Hooks.ChatLogHook->GetFastcall<void, __int64, TextHolder*, uint32_t>();
+	auto message = *reinterpret_cast<TextHolder*>(reinterpret_cast<__int64>(msg) + 0x8);
+
+	static auto killsults = moduleMgr->getModule<Insults>();
+	static auto player = Game.getLocalPlayer();
+
+	if (message.getText() != nullptr && player != nullptr && moduleMgr->getModule<Insults>()->isEnabled()) {
+		std::string textStr = message.getText();
+
+#ifdef _DEBUG
+		// if (moduleMgr->getModule<TestModule>()->isEnabled() && moduleMgr->getModule<TestModule>()->copyChatMessages) Utils::setClipboardText(string(message.getText()));
+#endif
+		// KillInsults
+		if (killsults->isEnabled()) {
+			std::string name = player->getNameTag()->getText();
+			name = Utils::sanitize(name);
+			if (textStr.find(name) != std::string::npos && textStr.find("killed") != std::string::npos || textStr.find(name) != std::string::npos && textStr.find("slain") != std::string::npos) {
+				killsults->killed = true;
+				size_t pos = textStr.find_last_of(' ');
+				// textStr = Utils::sanitize(textStr);
+				if (pos != std::string::npos) {
+					killsults->ign = textStr.substr(pos + 1);
+				} else {
+					killsults->ign = textStr;
+				}
+			}
+		}
+	}
+	return oFunc(a1, msg, a2);
+}
+
 void Hooks::MoveInputHandler_tick(__int64 a1, int* a2, uint32_t* a3, __int64* a4, MoveInputHandler* input, int a6) {
 	static auto oTick = g_Hooks.MoveInputHandler_tickHook->GetFastcall<void, __int64, int*, uint32_t*, __int64*, MoveInputHandler*, int>();
 
@@ -1128,7 +1163,6 @@ __int64 Hooks::ChestScreenController_tick(ChestScreenController* a1) {
 float Hooks::GetGamma(uintptr_t* a1) {
 	static auto fullbright = moduleMgr->getModule<FullBright>();
 	static auto xrayMod = moduleMgr->getModule<Xray>();
-	static auto nametagmod = moduleMgr->getModule<NameTags>();
 	static auto zoomMod = moduleMgr->getModule<Zoom>();
 	static auto viewMod = moduleMgr->getModule<ViewModel>();
 
@@ -1150,10 +1184,6 @@ float Hooks::GetGamma(uintptr_t* a1) {
 			xrayMod->smoothLightningSetting = smoothlightning;
 			obtainedSettings++;
 			hadIt = true;
-		} else if (!strcmp(settingname->getText(), "gfx_ingame_player_names")) {
-			bool* ingamePlayerName = (bool*)((uintptr_t)list[i] + 16);
-			nametagmod->ingameNametagSetting = ingamePlayerName;
-			obtainedSettings++;
 		} else if (!strcmp(settingname->getText(), "gfx_viewbobbing")) {
 			bool* viewbobbing = (bool*)((uintptr_t)list[i] + 16);
 			if (viewMod->isEnabled())

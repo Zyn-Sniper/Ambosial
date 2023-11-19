@@ -235,12 +235,12 @@
     <ClCompile Include="Horion\Module\Modules\Blink.cpp" />
     <ClCompile Include="Horion\Module\Modules\BowAimbot.cpp" />
     <ClCompile Include="Horion\Module\Modules\ChestAura.cpp" />
+    <ClCompile Include="Horion\Module\Modules\Player\Insults.cpp" />
     <ClCompile Include="Horion\Module\Modules\ReachDisplay.cpp" />
     <ClCompile Include="Horion\Module\Modules\Reducer.cpp" />
     <ClCompile Include="Horion\Module\Modules\Criticals.cpp" />
     <ClCompile Include="Horion\Module\Modules\OffhandAllow.cpp" />
     <ClCompile Include="Horion\Module\Modules\Render\ChinaHat.cpp" />
-    <ClCompile Include="Horion\Module\Modules\Render\TargetInfo.cpp" />
     <ClCompile Include="Horion\Module\Modules\Render\Theme.cpp" />
     <ClCompile Include="Horion\Module\Modules\Render\Trail.cpp" />
     <ClCompile Include="Horion\Module\Modules\StorageESP.cpp" />
@@ -275,7 +275,6 @@
     <ClCompile Include="Horion\Module\Modules\Killaura.cpp" />
     <ClCompile Include="Horion\Module\Modules\MidClick.cpp" />
     <ClCompile Include="Horion\Module\Modules\Module.cpp" />
-    <ClCompile Include="Horion\Module\Modules\NameTags.cpp" />
     <ClCompile Include="Horion\Module\Modules\Nbt.cpp" />
     <ClCompile Include="Horion\Module\Modules\NightMode.cpp" />
     <ClCompile Include="Horion\Module\Modules\NoFall.cpp" />
@@ -317,6 +316,7 @@
     <ClCompile Include="Horion\Module\Modules\Franky.cpp" />
     <ClCompile Include="Horion\Module\Modules\AntiBan.cpp" />
     <ClCompile Include="Horion\Module\Modules\ItemView.cpp" />
+    <ClCompile Include="Horion\Module\Modules\NameTags.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoal.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoalXYZ.cpp" />
     <ClCompile Include="Horion\path\goals\JoeGoalXZ.cpp" />
@@ -451,7 +451,6 @@
     <ClInclude Include="Horion\Module\Modules\Killaura.h" />
     <ClInclude Include="Horion\Module\Modules\MidClick.h" />
     <ClInclude Include="Horion\Module\Modules\Module.h" />
-    <ClInclude Include="Horion\Module\Modules\NameTags.h" />
     <ClInclude Include="Horion\Module\Modules\Nbt.h" />
     <ClInclude Include="Horion\Module\Modules\NightMode.h" />
     <ClInclude Include="Horion\Module\Modules\NoFall.h" />
@@ -466,13 +465,13 @@
     <ClInclude Include="Horion\Module\Modules\OffhandAllow.h" />
     <ClInclude Include="Horion\Module\Modules\PacketLogger.h" />
     <ClInclude Include="Horion\Module\Modules\Phase.h" />
+    <ClInclude Include="Horion\Module\Modules\Player\Insults.h" />
     <ClInclude Include="Horion\Module\Modules\Radar.h" />
     <ClInclude Include="Horion\Module\Modules\RainbowSky.h" />
     <ClInclude Include="Horion\Module\Modules\Reach.h" />
     <ClInclude Include="Horion\Module\Modules\ReachDisplay.h" />
     <ClInclude Include="Horion\Module\Modules\Reducer.h" />
     <ClInclude Include="Horion\Module\Modules\Render\ChinaHat.h" />
-    <ClInclude Include="Horion\Module\Modules\Render\TargetInfo.h" />
     <ClInclude Include="Horion\Module\Modules\Render\Theme.h" />
     <ClInclude Include="Horion\Module\Modules\Render\Trail.h" />
     <ClInclude Include="Horion\Module\Modules\Scaffold.h" />
@@ -502,6 +501,7 @@
     <ClInclude Include="Horion\Module\Modules\Franky.h" />
     <ClInclude Include="Horion\Module\Modules\AntiBan.h" />
     <ClInclude Include="Horion\Module\Modules\ItemView.h" />
+    <ClInclude Include="Horion\Module\Modules\Nametags.h" />
     <ClInclude Include="Horion\path\goals\JoeGoal.h" />
     <ClInclude Include="Horion\path\goals\JoeGoalXYZ.h" />
     <ClInclude Include="Horion\path\goals\JoeGoalXZ.h" />

@@ -142,9 +142,11 @@ private:
 	static void Actor_checkFallDamage(Entity* _this, float f, bool b);
 	static bool Actor__isInWall(Entity* ent);
 	static __int64 isAllowedUIOpenForNonImplementedSource(__int64 a1, Player* a2);
+	static void chatLogHookFunc(__int64 a1, TextHolder* msg, uint32_t a2);
 
 	std::unique_ptr<FuncHook> Actor_rotationHook;
 	std::unique_ptr<FuncHook> setPosHook;
+	std::unique_ptr<FuncHook> ChatLogHook;
 	std::unique_ptr<FuncHook> Actor_baseTickHook;
 	std::unique_ptr<FuncHook> Player_tickWorldHook;
 	std::unique_ptr<FuncHook> ClientInstanceScreenModel_sendChatMessageHook;

@@ -30,7 +30,7 @@ void doRenderStuff(Entity* ent, bool isRegularEntitie) {
 		DrawUtils::setColor(0.1f, 0.9f, 0.1f, 1.f);
 	} else if (Target::isValidTarget(ent)) {
 		if (espMod->doRainbow)
-			DrawUtils::setColor(rcolors[0], rcolors[1], rcolors[2], 1.f);
+			DrawUtils::setColor(ColorUtil::ClientColor(1).r, ColorUtil::ClientColor(1).b, ColorUtil::ClientColor(1).g, 255);
 		else
 			DrawUtils::setColor(0.9f, 0.9f, 0.9f, 1.f);
 	} else if (espMod->isMobEsp) {
@@ -53,9 +53,9 @@ void doRenderStuff(Entity* ent, bool isRegularEntitie) {
 		return;
 	if (espMod->is2d) {
 		Vec3 position = ent->getRenderPositionComponent()->renderPos;
-		float color = ent->getMovementProxy()->getHealth() / 20;
 		// DrawUtils::drawBox(position.add(-0.5, 0.2, -0.5), position.add(0.5, 0.1, 0.5), 0.3f, true);
-		DrawUtils::draw2DBox(position.add(-0.5, -1.7, -0.5), position.add(0.5, 0.3, 0.5), 0.3f, false, true);
+		DrawUtils::draw2D(ent, 0.5);
+		//DrawUtils::draw2DBox(position.add(-0.5, -1.7, -0.5), position.add(0.5, 0.3, 0.5), 0.3f, false, true);
 	}
 	else 
 		DrawUtils::drawEntityBox(ent, (float)fmax(0.5f, 1 / (float)fmax(1, localPlayer->getRenderPositionComponent()->renderPos.dist(ent->getRenderPositionComponent()->renderPos))));
@@ -67,7 +67,8 @@ void ESP::onPreRender(MinecraftUIRenderContext* renderCtx) {
 	if (localPlayer != nullptr && GameData::canUseMoveKeys() && self) {
 		Vec3 position = localPlayer->getRenderPositionComponent()->renderPos;
 		DrawUtils::setColor(ColorUtil::ClientColor(1).r, ColorUtil::ClientColor(1).b, ColorUtil::ClientColor(1).g, 255);
-		DrawUtils::draw2DBox(position.add(-0.5, -1.7, -0.5), position.add(0.5, 0.3, 0.5), 0.6f, false, true);
+		DrawUtils::draw2D(localPlayer, 0.6f);
+		//DrawUtils::draw2DBox(position.add(-0.5, -1.7, -0.5), position.add(0.5, 0.3, 0.5), 0.6f, false, true);
 	}
 
 	if (localPlayer != nullptr && GameData::canUseMoveKeys()) {

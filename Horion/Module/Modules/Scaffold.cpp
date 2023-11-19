@@ -245,22 +245,22 @@ void Scaffold::onPostRender(MinecraftUIRenderContext* ctx) {
 			}
 		}
 
-		float animTime = min(openTime, 1000) / 1000.f;
+		float animTime = min(openTime, 1100) / 1100.f;
 		animTime = easeOutExpo(animTime);  // Elastic // Bounce// Expo . Quint // Circ
 
 		float renderx = Game.getClientInstance()->getGuiData()->windowSize.x / 2;
 		float rendery = roundf(Game.getGuiData()->heightGame * 0.75f) + 0.5f;
-		Vec2 textPosZephyr = Vec2(renderx + 4, (rendery - 33.f) * animTime);
-		Vec4 plusRect = Vec4(renderx, (rendery + 6) * animTime, 55 + renderx, (rendery + 16) * animTime);
+		Vec2 textPosZephyr = Vec2(renderx + 4, (rendery - 33.f));
+		Vec4 plusRect = Vec4(renderx, (rendery) + (6 * animTime), (renderx) + (55 * animTime), (rendery) + (16 * animTime));
 
 		std::string Count = std::to_string(totalCount);
 		std::string text = "  Blocks " + (Count);
-		float textLen = RenderUtil::getTextLen(&text, 1.3, NOTOSANS) / 2;
+		float textLen = RenderUtil::getTextLen(&text, 1.3 * animTime, NOTOSANS) / 2;
 		textPosZephyr.x -= textLen;
 		plusRect.x -= textLen;
-		Vec4 rectangleRect = Vec4(plusRect.x + 6, plusRect.y - 39, plusRect.z - 22, plusRect.w - 39);
+		Vec4 rectangleRect = Vec4((plusRect.x + 6), (plusRect.y - 39), (plusRect.z - 22), (plusRect.w - 39));
 		Vec4 wow = Vec4(50, 50, 50, 25);
-		RenderUtil::drawText(textPosZephyr, &text, MC_Color(255, 255, 255), 1.3, animTime, false, NOTOSANS);  // MC
+		RenderUtil::drawText(textPosZephyr, &text, MC_Color(255, 255, 255), 1.3 * animTime, 1, false, NOTOSANS);                     // MC
 		Vec4 gloPos = Vec4(rectangleRect.x + 4, rectangleRect.y + 2, rectangleRect.z - 4, rectangleRect.w - 2);
 		RenderUtil::RenderRoundRectangle(rectangleRect, MC_Color(0, 0, 0, 70));
 		DrawUtils::drawGlow(gloPos, MC_Color(0, 0, 0, 50 / 6), 0.05, 6, 4);

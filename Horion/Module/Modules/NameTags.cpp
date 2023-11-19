@@ -1,6 +1,7 @@
 #include "NameTags.h"
 
-#include "../../../SDK/Utils/Target.h"
+#include "../../DrawUtils.h"
+#include "../../SDK/Utils/Target.h"
 #include "../ModuleManager.h"
 
 NameTags::NameTags() : IModule(0, Category::VISUAL, "Shows better nametags.") {
@@ -28,7 +29,6 @@ void drawNameTags(Entity* ent, bool) {
 		if (Target::isValidTarget(ent) && nameTagsMod != nullptr) {
 			nameTagsMod->nameTags.insert(Utils::sanitize(ent->getNameTag()->getText()));
 			float dist = ent->getPos()->dist(*Game.getLocalPlayer()->getPos());
-			DrawUtils::drawNameTags(ent, fmax(0.6f, 3.f / dist));
 			DrawUtils::flush();
 		}
 	}
@@ -44,9 +44,9 @@ void NameTags::onPreRender(MinecraftUIRenderContext* renderCtx) {
 			gotPrevSetting = true;
 			*ingameNametagSetting = false;
 		} else
-			*ingameNametagSetting = false;  //disable other ppl's nametags
+			*ingameNametagSetting = false;  // disable other ppl's nametags
 
-    drawNameTags;
+	drawNameTags;
 	Game.forEachEntity(drawNameTags);
 }
 

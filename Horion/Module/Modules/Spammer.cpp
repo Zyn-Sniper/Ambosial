@@ -1,6 +1,8 @@
 #include "Spammer.h"
 #include "../../../SDK/Utils/Utils.h"
 
+int shittty = 0; 
+
 Spammer::Spammer() : IModule(0, Category::MISC, "Spams a message in a specified delay.") {
 	addInt("Delay", &delay, delay, 1, 10);
 	addInt("Length", &length, length, 1, 60);
@@ -16,12 +18,20 @@ const char* Spammer::getModuleName() {
 
 void Spammer::onTick(GameMode* gm) {
 	Odelay++;
+	shittty++;
 	if (Odelay > delay * 20) {
-		C_TextPacket textPacket;
-		textPacket.message.setText(bypass ? (message + " | " + Utils::randomString(length)) : message);
-		textPacket.sourceName.setText(Game.getLocalPlayer()->getNameTag()->getText());
-		textPacket.xboxUserId = std::to_string(Game.getLocalPlayer()->getUserId());
-		Game.getClientInstance()->loopbackPacketSender->sendToServer(&textPacket);
+		TextHolder cmd;
+		if (shittty > 0) {
+			TextHolder cmd = "/p FlyGamer8908";
+		} else if (shittty > 10) {
+			TextHolder cmd = "/p disband";
+		}
+		if (shittty > 20) {
+			shittty = 0;
+		}
+		CommandRequestPacket packet;
+		packet.command = cmd;
+		Game.getClientInstance()->loopbackPacketSender->sendToServer(&packet);
 		Odelay = 0;
 	}
 }

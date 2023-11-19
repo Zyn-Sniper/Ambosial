@@ -768,7 +768,7 @@ void ClickGui::render() {
 
 	// Fill Background
 	//DrawUtils::fillRectangle(Vec4(0, 0, Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), MC_Color(12, 12, 12), 0.2f);
-        //DrawUtils::drawImage("textures/ui/shadow.png", Vec2(0, 0), Vec2(Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), Vec2(0, 0), Vec2(1, 1), MC_Color(255, 0, 255), 1.0);
+	DrawUtils::drawImage("textures/ui/shadow.png", Vec2(0, 0), Vec2(Game.getClientInstance()->getGuiData()->widthGame, Game.getClientInstance()->getGuiData()->heightGame), Vec2(0, 0), Vec2(1, 1), ColorUtil::ClientColor(1), 0.5);
 	// Render all categorys
 	renderCategory(Category::COMBAT);
 	renderCategory(Category::VISUAL);

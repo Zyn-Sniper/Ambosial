@@ -62,6 +62,9 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	Vec2 windowSizeReal = Game.getClientInstance()->getGuiData()->windowSizeReal;
 	Vec2 mousePos = *Game.getClientInstance()->getMousePos();
 
+	windowSize.x = windowSize.x - 7;
+	windowSize.y = windowSize.y;
+
 	// Convert mousePos to visual Pos
 	{
 		mousePos = mousePos.div(windowSizeReal);
@@ -92,7 +95,7 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 	float textHeight = 10.0f * textSize;
 	int seperation = 50;  // Adjust this to change the seperation of the colors
 	int index = 0;
-	float yOffset = 0;
+	float yOffset = 7;
 
 	for (auto it = modContainerList.begin(); it != modContainerList.end(); ++it) {
 		if (!it->shouldRender) continue;
@@ -105,7 +108,7 @@ void Arraylist::onPostRender(MinecraftUIRenderContext* renderCtx) {
 		auto xOffsetOri = windowSize.x - textWidth - (textPadding * 2);
 		auto xOffset = windowSize.x - container.pos->x;
 
-		container.pos->x = smoothLerp(container.enabled ? windowSize.x - xOffsetOri : -1.f, container.pos->x, 0.04);
+		container.pos->x = smoothLerp(container.enabled ? windowSize.x - xOffsetOri : -1.f, container.pos->x, 0.20);
 		if (xOffset >= windowSize.x && !container.enabled) {
 			container.pos->x = 0.f;
 			container.pos->y = 0.f;

@@ -113,7 +113,7 @@ void Killaura::onTick(GameMode* gm) {
 		if (autoweapon) findWeapon();
 
 		if (strafe) {
-			//angle = Game.getLocalPlayer()->getPos()->CalcAngle(*targetList[0]->getPos());
+			angle = Game.getLocalPlayer()->getPos()->CalcAngle(*targetList[0]->getPos());
 		}
 		TimerUtil* timerUtil = new TimerUtil;
 		if (timerUtil->hasTimedElapsed((1000 / delay), true)) {
@@ -140,8 +140,8 @@ void Killaura::onPlayerTick(Player* plr) {
 	if (!targetList.empty()) {
 		Vec2 angle = Game.getLocalPlayer()->getPos()->CalcAngle(*targetList[0]->getPos());
 		if (strafe) {
+			player->getMovementProxy()->setRot(angle);
 			player->getMovementProxy()->setYHeadRot(angle.y);
-			player->getMobBodyRotationComponent()->bodyRot = angle.y;
 		}
 		if (randomize) {
 			float xRandom = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 10));
@@ -162,7 +162,6 @@ void Killaura::onPlayerTick(Player* plr) {
 			animPitch = angle.x;
 			player->getActorRotationComponent()->rot.x = animPitch;
 			player->getMovementProxy()->setYHeadRot(animYaw);
-			player->getMobBodyRotationComponent()->bodyRot = animYaw;
 		} break;
 		case 2: {
 			if (fabsf(angle.y - animYaw) < 180) {
@@ -187,7 +186,6 @@ void Killaura::onPlayerTick(Player* plr) {
 			animPitch = easingEaseOutCubic(1, animPitch, angle.x - animPitch, smoothing);
 			player->getActorRotationComponent()->rot.x = animPitch;
 			player->getMovementProxy()->setYHeadRot(animYaw);
-			player->getMobBodyRotationComponent()->bodyRot = animYaw;
 			/*player->pitch = animPitch;
 			player->yawUnused1 = animYaw;
 			player->bodyYaw = animYaw;*/

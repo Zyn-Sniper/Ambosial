@@ -474,37 +474,6 @@ void DrawUtils::drawGlow(const Vec4& pos, const MC_Color& col, float alpha, int 
 	}
 }
 
-void DrawUtils::drawNameTags(Entity* ent, float textSize, bool drawHealth, bool useUnicodeFont) {
-	LocalPlayer* localPlayer = Game.getLocalPlayer();
-
-	Vec2 textPos;
-	Vec4 rectPos;
-	int dist = ent->getPos()->dist(*Game.getLocalPlayer()->getPos());
-
-	std::string text = ent->getNameTag()->getText() + dist + std::string("m");
-	text = Utils::sanitize(text);
-
-	float textWidth = getTextWidth(&text, textSize);
-	float textHeight = DrawUtils::getFont(Fonts::SMOOTH)->getLineHeight() * textSize;
-
-	if (refdef->OWorldToScreen(origin, ent->getRenderPositionComponent()->renderPos.add(0, 0.5f, 0), textPos, fov, screenSize)) {
-		textPos.y -= textHeight;
-		textPos.x -= textWidth / 2.f;
-		rectPos.x = textPos.x - 1.f * textSize;
-		rectPos.y = textPos.y - 1.f * textSize;
-		rectPos.z = textPos.x + textWidth + 1.f * textSize;
-		rectPos.w = textPos.y + textHeight + 2.f * textSize;
-		Vec4 subRectPos = rectPos;
-		subRectPos.y = subRectPos.w - 1.f * textSize;
-		static auto nametagsMod = moduleMgr->getModule<NameTags>();
-		fillRectangle(rectPos, ClientColors::nametagsBackgroundColor, nametagsMod->opacity);
-		if (nametagsMod->underline) {
-			fillRectangle(subRectPos, ClientColors::nametagsUnderlineColor, 0.9f);
-		}
-		drawText(textPos, &text, MC_Color(255, 255, 255), textSize);
-	}
-}
-
 void DrawUtils::drawEntityBox(Entity* ent, float lineWidth, bool fill) {
 	Vec3 end = ent->getRenderPositionComponent()->renderPos;
 	AABB render;
@@ -521,7 +490,6 @@ void DrawUtils::drawEntityBox(Entity* ent, float lineWidth, bool fill) {
 }
 
 void DrawUtils::draw2D(Entity* ent, float lineWidth) {
-	if (Game.getLocalPlayer() == nullptr) return;
 	Vec3 end = ent->getRenderPositionComponent()->renderPos;
 	AABB render;
 	if (ent->isPlayer()) {
@@ -532,33 +500,8 @@ void DrawUtils::draw2D(Entity* ent, float lineWidth) {
 		render = AABB(end, ent->getAABBShapeComponent()->aabb.width, ent->getAABBShapeComponent()->aabb.height, 0);
 	render.upper.y += 0.1f;
 
-	Vec3 worldPoints[8];
-	worldPoints[0] = Vec3(render.lower.x, render.lower.y, render.lower.z);
-	worldPoints[1] = Vec3(render.lower.x, render.lower.y, render.upper.z);
-	worldPoints[2] = Vec3(render.upper.x, render.lower.y, render.lower.z);
-	worldPoints[3] = Vec3(render.upper.x, render.lower.y, render.upper.z);
-	worldPoints[4] = Vec3(render.lower.x, render.upper.y, render.lower.z);
-	worldPoints[5] = Vec3(render.lower.x, render.upper.y, render.upper.z);
-	worldPoints[6] = Vec3(render.upper.x, render.upper.y, render.lower.z);
-	worldPoints[7] = Vec3(render.upper.x, render.upper.y, render.upper.z);
-
-	std::vector<Vec2> points;
-	for (int i = 0; i < 8; i++) {
-		Vec2 result;
-		if (refdef->OWorldToScreen(origin, worldPoints[i], result, fov, screenSize))
-			points.emplace_back(result);
-	}
-	if (points.size() < 1) return;
-
-	Vec4 resultRect = {points[0].x, points[0].y, points[0].x, points[0].y};
-	for (const auto& point : points) {
-		if (point.x < resultRect.x) resultRect.x = point.x;
-		if (point.y < resultRect.y) resultRect.y = point.y;
-		if (point.x > resultRect.z) resultRect.z = point.x;
-		if (point.y > resultRect.w) resultRect.w = point.y;
-	}
 	float LineWidth = (float)fmax(0.5f, 1 / (float)fmax(1, (float)Game.getLocalPlayer()->getRenderPositionComponent()->renderPos.dist(end)));
-	DrawUtils::drawRectangle(Vec2(resultRect.x, resultRect.y), Vec2(resultRect.z, resultRect.w), lineWidth == 0 ? LineWidth : lineWidth);
+	DrawUtils::draw2DBox(render.lower, render.upper, lineWidth == 0 ? LineWidth : lineWidth, false, true);
 }
 
 void DrawUtils::drawItem(ItemStack* item, const Vec2& itemPos, float opacity, float scale, bool isEnchanted) {

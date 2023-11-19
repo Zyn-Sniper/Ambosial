@@ -10,8 +10,8 @@
 #include "../../Memory/GameData.h"
 
 #include "Modules/Render/ChinaHat.h"
+#include "Modules/Player/Insults.h"
 #include "Modules/Render/Trail.h"
-#include "Modules/Render/TargetInfo.h"
 #include "Modules/Render/Theme.h"
 #include "Modules/FollowPathModule.h"
 #include "Modules/InventoryCleaner.h"

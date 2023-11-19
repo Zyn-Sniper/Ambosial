@@ -133,7 +133,6 @@ public:
 	static void draw2DBox(const Vec3& lower, const Vec3& upper, float lineWidth, bool fill = false, bool corners = false);
 	static void drawEntityBox(Entity* ent, float lineWidth = 0.f, bool fill = false);
 	static void draw2D(Entity* ent, float lineWidth = 0.f);
-	static void drawNameTags(Entity* ent, float textSize, bool drawHealth = false, bool useUnicodeFont = false);
 	static void drawItem(ItemStack* item, const Vec2& ItemPos, float opacity, float scale, bool isEnchanted);
 	static float getLerpTime();
 	static Vec3 getOrigin();
