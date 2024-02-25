@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <string>
 
-class TextHolder {
+class TextHolder { // Pastersss
 public:
 	union {
 		char inlineText[16];  //0x0000
