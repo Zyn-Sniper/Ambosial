@@ -14,6 +14,8 @@
 #include "../SDK/Utils/ClientColors.h"
 #include "../SDK/Utils/ColorUtil.h"
 
+// Damn Matrix stuff should be cool
+
 Hooks g_Hooks;
 bool isTicked = false;
 bool overrideStyledReturn = false;
@@ -22,9 +24,9 @@ TextHolder styledReturnText;
 
 void javaBlockRotate(glm::mat4& matrix, float upper) {
 	float floatY = -1.30F;
-	matrix = glm::translate<float>(matrix, glm::vec3(-0.24F, upper, -0.20F));
-	matrix = glm::rotate<float>(matrix, -1.98F, glm::vec3(0.0F, 1.0F, 0.0F));
-	matrix = glm::rotate<float>(matrix, -floatY, glm::vec3(4.0F, 0.0F, 0.0F));
+	matrix = glm::translate<float>(matrix, glm::vec3(-0.24F, upper, -0.2340F));
+	matrix = glm::rotate<float>(matrix, -1.98F, glm::vec3(0.0F, 1.0F, 0.04F));
+	matrix = glm::rotate<float>(matrix, -floatY, glm::vec3(4.0F, 0.0F, 0.4410F));
 	matrix = glm::rotate<float>(matrix, 60.0F, glm::vec3(0.0F, 1.0F, 0.0F));
 }
 
